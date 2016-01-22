@@ -243,7 +243,7 @@ public class PrinterController {
      * @param text
      * @return 
      */
-    public byte[] PrintCard(String text){
+    public byte[] PrintCard(String text,boolean first){
         
         LoadProperties();
         this.margin =  prop.getProperty("margin","1").getBytes(); 
@@ -266,8 +266,11 @@ public class PrinterController {
             card[i] = cardMaker.get(i);
              i++;
         }
-        counter++;
-        UpdateCounter();
+        if(!first){
+           counter++;
+        UpdateCounter(); 
+        }
+        
         return card;
     }
     

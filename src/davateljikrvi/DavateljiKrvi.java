@@ -46,7 +46,7 @@ public class DavateljiKrvi {
         gpio = GpioFactory.getInstance();
         serial= SerialFactory.createInstance();
         tipka1 = gpio.provisionDigitalInputPin(RaspiPin.GPIO_29, PinPullResistance.PULL_UP);
-        led = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28, PinState.HIGH);
+        led = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28, PinState.LOW);
         tipka1.setDebounce(100);
        
         tipka1.addListener((GpioPinListenerDigital) (GpioPinDigitalStateChangeEvent event) -> {
@@ -76,7 +76,9 @@ public class DavateljiKrvi {
        while (true) {     
            if(ucitana) {
                 led.blink(1000);
+                SerialSend();
                 ucitana = !ucitana;
+               
            }
            
             try {
@@ -117,13 +119,14 @@ public class DavateljiKrvi {
     }
     
     private static boolean SerialSend(){
-        
+        byte CCut[] = new byte[]{0x1b, 0x64, 0x03}; // Cut paper
         if(serial.isClosed()){
                          serial.open("/dev/usb/lp0", 9600);
                     }
                    
-                    byte data[] = print.PrintCard(karta);
+                    byte data[] = print.PrintCard(karta,ucitana);
                     serial.write(data);
+                  
                     
          try {
              Thread.sleep(1000);
